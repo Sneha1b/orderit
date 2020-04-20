@@ -27,7 +27,6 @@ public class OrderController {
     @RequestMapping("/create")
     @ResponseBody
     public String createOrder(){
-        String result = orderService.createOrder();
-        return result;
+       return orderService.createOrder();
     }
 }
