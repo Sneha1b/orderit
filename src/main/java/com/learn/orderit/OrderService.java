@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderService {
 
-    public String createOrder(){
+    public String getOrder(){
         return "New Order is created";
     }
 }

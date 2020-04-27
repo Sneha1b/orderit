@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 @Controller
 @Produces(MediaType.APPLICATION_JSON)
-@RequestMapping("/order")
+@RequestMapping("/order-management")
 @Api(description = "Order creation API for orderit",
         produces = MediaType.APPLICATION_JSON)
 public class OrderController {
@@ -24,9 +24,9 @@ public class OrderController {
     }
 
     @GET
-    @RequestMapping("/create")
+    @RequestMapping("/orders")
     @ResponseBody
-    public String createOrder(){
-       return orderService.createOrder();
+    public String getOrder(){
+       return orderService.getOrder();
     }
 }
