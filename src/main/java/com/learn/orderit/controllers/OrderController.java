@@ -1,5 +1,6 @@
-package com.learn.orderit;
+package com.learn.orderit.controller;
 
+import com.learn.orderit.service.OrderService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
