@@ -1,6 +1,7 @@
 package com.learn.orderit.service;
 
 import com.learn.orderit.entity.User;
+import com.learn.orderit.exceptions.UserNotFoundException;
 import com.learn.orderit.models.UserRequest;
 import com.learn.orderit.models.UserResponse;
 import com.learn.orderit.repository.IUserRepository;
@@ -62,8 +63,8 @@ public class UserService {
             userResponse.setMessage("Found user with ID " + userId);
             log.info("User with ID {}  fetched", userId);
         } else {
-            userResponse.setMessage("User with ID not Found " + userId);
-            log.info("User with ID {} not found, user fetch failed", userId);
+            log.error("User with ID {} not found, user fetch failed", userId);
+            throw new UserNotFoundException("User with ID not Found " + userId);
         }
         return userResponse;
     }
@@ -78,8 +79,8 @@ public class UserService {
             log.info("User with ID {}  deleted", userId);
         }
         else{
-            userResponse.setMessage("User with ID not found " + userId + " user delete failed");
-            log.info("User with ID {} not found, user delete failed", userId);
+            log.error("User with ID {} not found, user delete failed", userId);
+            throw new UserNotFoundException("User with ID not found " + userId + " user delete failed");
 
         }
 
@@ -97,8 +98,8 @@ public class UserService {
             log.info("Updated user with id {} and user details {}", userId, userRequest);
         }
         else{
-            userResponse.setMessage("User with ID not found " + userId + " user update failed");
-            log.info("User with ID {} not found, user update failed", userId);
+            log.error("User with ID {} not found, user update failed", userId);
+            throw new UserNotFoundException("User with ID not found " + userId + " user update failed");
         }
 
         return userResponse;
