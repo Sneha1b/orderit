@@ -1,9 +1,12 @@
 package com.learn.orderit.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -11,9 +14,10 @@ import java.util.Date;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, name = "id")
-    private int id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(updatable = false, nullable = false, name = "id", length = 36)
+    private String id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -30,21 +34,11 @@ public class User {
     @Column(name = "birth_date")
     private Date birthDate;
 
+    @CreationTimestamp
     @Column(name = "created_at")
-    private Timestamp createdAt;
+    private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private Timestamp updatedAt;
-
-    public void setCreatedAt(Long timeInMillis) {
-        this.createdAt = new Timestamp(timeInMillis);
-    }
-
-    public void setUpdatedAt(Long timeInMillis) {
-        this.updatedAt = new Timestamp(timeInMillis);
-    }
-
-    public void setBirthDate(long timeMillis){
-        birthDate = new Date(timeMillis);
-    }
+    private LocalDateTime updatedAt;
 }

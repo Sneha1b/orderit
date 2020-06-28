@@ -1,78 +1,76 @@
 package com.learn.orderit.controllers;
 
+import com.learn.orderit.actions.*;
+import com.learn.orderit.entity.User;
 import com.learn.orderit.models.UserRequest;
-import com.learn.orderit.models.UserResponse;
-import com.learn.orderit.service.UserService;
-import io.swagger.annotations.Api;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Controller
+@RestController
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RequestMapping("/user-management/users")
-@Api(description = "User management API for orderit")
+@RequestMapping("/user_management/users")
+@RequiredArgsConstructor
+@Transactional
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
 
-    private final UserService userService;
-
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    CreateUserAction createUserAction;
+    GetUserAction getUserAction;
+    GetAllUsersAction getAllUsersAction;
+    DeleteUserAction deleteUserAction;
+    UpdateUserAction updateUserAction;
+    static Logger log = LoggerFactory.getLogger(UserController.class);
 
     @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
     @ResponseStatus(value = HttpStatus.CREATED)
-    public UserResponse createUser(@RequestBody UserRequest userRequest){
+    public ResponseEntity<String> createUser(@RequestBody @Valid UserRequest userRequest){
         log.info("Received request to create user with details {}", userRequest);
-        if(!userRequest.validate()){
-            UserResponse userResponse = new UserResponse();
-            userResponse.setMessage("Bad request to create user");
-            return userResponse;
-        }
-        return userService.createUser(userRequest);
+        User user = createUserAction.invoke(userRequest);
+        return ResponseEntity.ok().header("user_id",String.valueOf(user.getId())).build();
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
     @ResponseStatus(value = HttpStatus.OK)
-    public List<UserResponse> getUsers(){
+    public List<User> getUsers(@PageableDefault(value = 5, page = 0) Pageable pageable){
         log.info("Received request to fetch all users");
-        return userService.getAllUsers();
+        Page userPage = getAllUsersAction.invoke(pageable);
+        return userPage.getContent();
     }
 
-
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
-    @ResponseBody
     @ResponseStatus(value = HttpStatus.OK)
-    public UserResponse getUser(@PathVariable int userId){
+    public User getUser(@PathVariable String userId){
         log.info("Received request to fetch user with ID {}", userId);
-        return userService.getUser(userId);
+        return getUserAction.invoke(Integer.valueOf(userId));
     }
 
     @RequestMapping(path = "/{userId}", method = RequestMethod.DELETE)
-    @ResponseBody
-    @ResponseStatus(value = HttpStatus.OK)
-    public UserResponse deleteUser(@PathVariable int userId){
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable String userId){
         log.info("Received request to delete user with ID {}", userId);
-        return userService.deleteUser(userId);
+        deleteUserAction.invoke(Integer.valueOf(userId));
     }
 
     @RequestMapping(path = "/{userId}", method = RequestMethod.PUT)
-    @ResponseBody
-    @ResponseStatus(value = HttpStatus.OK)
-    public UserResponse updateUser(@PathVariable int userId, @RequestBody UserRequest userRequest){
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void updateUser(@PathVariable String userId, @RequestBody UserRequest userRequest){
         log.info("Received request to update user details with user ID {} and details {}", userId, userRequest);
-        return userService.updateUser(userId, userRequest);
+        updateUserAction.invoke(Integer.valueOf(userId), userRequest);
     }
 }
