@@ -19,14 +19,14 @@ public class CreateUserAction {
     private final IUserRepository userRepository;
     private final ModelMapper modelMapper =  new ModelMapper();
 
-    public User invoke(UserRequest userRequest) {
+    public String invoke(UserRequest userRequest) {
         configureModelMapperForUser();
 
         User user = modelMapper.map(userRequest, User.class);
         log.info("Created user with details {}", user);
         userRepository.save(user);
 
-        return user;
+        return user.getId();
     }
 
     private void configureModelMapperForUser() {
@@ -41,11 +41,11 @@ public class CreateUserAction {
                 skip().setId("1");
             }
         };
-        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getFirstName(), User::setFirstName);
-        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getLastName(), User::setLastName);
-        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getPhoneNumber(), User::setPhoneNumber);
-        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getEmailId(), User::setEmailId);
-        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getBirthDate(), User::setBirthDate);
+        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getFirst_name(), User::setFirstName);
+        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getLast_name(), User::setLastName);
+        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getPhone_number(), User::setPhoneNumber);
+        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getEmail_id(), User::setEmailId);
+        modelMapper.typeMap(UserRequest.class, User.class).addMapping(src -> src.getBirth_date(), User::setBirthDate);
         modelMapper.addMappings(skipFields);
 
         log.info("ModelMapper configured");

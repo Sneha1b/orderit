@@ -19,19 +19,19 @@ public class UpdateUserAction {
     private static final Logger log = LoggerFactory.getLogger(GetUserAction.class);
     private final IUserRepository userRepository;
 
-    public void invoke(int userId, UserRequest userRequest){
+    public void invoke(String userId, UserRequest userRequest){
         log.info("Attempt to update user details");
         Optional<User> user = userRepository.findById(userId);
         Optional.ofNullable(user).map(givenUser -> {
             User updatedUser = givenUser.get();
-            if(userRequest.getFirstName()!= null)
-                updatedUser.setFirstName(userRequest.getFirstName());
-            if(userRequest.getLastName()!= null)
-                updatedUser.setLastName(userRequest.getLastName());
-            if(userRequest.getEmailId()!= null)
-                updatedUser.setEmailId(userRequest.getEmailId());
-            if(userRequest.getPhoneNumber()!= null)
-                updatedUser.setPhoneNumber(userRequest.getPhoneNumber());
+            if(userRequest.getFirst_name()!= null)
+                updatedUser.setFirstName(userRequest.getFirst_name());
+            if(userRequest.getLast_name()!= null)
+                updatedUser.setLastName(userRequest.getLast_name());
+            if(userRequest.getEmail_id()!= null)
+                updatedUser.setEmailId(userRequest.getEmail_id());
+            if(userRequest.getPhone_number()!= null)
+                updatedUser.setPhoneNumber(userRequest.getPhone_number());
             userRepository.save(updatedUser);
             log.info("Updated user with id {} and user details {}", userId, userRequest);
             return updatedUser;

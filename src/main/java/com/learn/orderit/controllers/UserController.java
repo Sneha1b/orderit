@@ -19,12 +19,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+import java.net.URI;
 
 @RestController
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@RequestMapping("/user_management/users")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 @Transactional
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -40,37 +40,37 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<String> createUser(@RequestBody @Valid UserRequest userRequest){
-        log.info("Received request to create user with details {}", userRequest);
-        User user = createUserAction.invoke(userRequest);
-        return ResponseEntity.ok().header("user_id",String.valueOf(user.getId())).build();
+        String userId = createUserAction.invoke(userRequest);
+        URI location = URI.create("/users");
+        return ResponseEntity.created(location).header("user_id",userId).build();
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
-    public List<User> getUsers(@PageableDefault(value = 5, page = 0) Pageable pageable){
+    public Page<User> getUsers(@PageableDefault(value = 5, page = 0) Pageable pageable){
         log.info("Received request to fetch all users");
         Page userPage = getAllUsersAction.invoke(pageable);
-        return userPage.getContent();
+        return userPage;
     }
 
     @RequestMapping(path = "/{userId}", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     public User getUser(@PathVariable String userId){
         log.info("Received request to fetch user with ID {}", userId);
-        return getUserAction.invoke(Integer.valueOf(userId));
+        return getUserAction.invoke(userId);
     }
 
     @RequestMapping(path = "/{userId}", method = RequestMethod.DELETE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable String userId){
         log.info("Received request to delete user with ID {}", userId);
-        deleteUserAction.invoke(Integer.valueOf(userId));
+        deleteUserAction.invoke(userId);
     }
 
     @RequestMapping(path = "/{userId}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateUser(@PathVariable String userId, @RequestBody UserRequest userRequest){
-        log.info("Received request to update user details with user ID {} and details {}", userId, userRequest);
-        updateUserAction.invoke(Integer.valueOf(userId), userRequest);
+    public void updateUser(@PathVariable String userId, @RequestBody @Valid UserRequest userRequest){
+        log.info("Received request to update user details with user ID {}", userId);
+        updateUserAction.invoke(userId, userRequest);
     }
 }

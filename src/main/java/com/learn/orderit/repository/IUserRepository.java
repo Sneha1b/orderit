@@ -6,5 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface IUserRepository extends CrudRepository<User, Integer>, PagingAndSortingRepository<User, Integer> {
+public interface IUserRepository extends CrudRepository<User, String>, PagingAndSortingRepository<User, String> {
 }

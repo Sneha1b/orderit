@@ -18,7 +18,7 @@ public class GetUserAction {
     private static final Logger log = LoggerFactory.getLogger(GetUserAction.class);
     private final IUserRepository userRepository;
 
-    public User invoke(Integer userId) {
+    public User invoke(String userId) {
         Optional<User> user = userRepository.findById(userId);
         return Optional.ofNullable(user).map(givenUser -> {
             log.info("User with ID {}  fetched", userId);

@@ -21,7 +21,7 @@ public class DeleteUserAction {
     private static final Logger log = LoggerFactory.getLogger(DeleteUserAction.class);
     private final IUserRepository userRepository;
 
-    public void invoke(Integer userId){
+    public void invoke(String userId){
         Optional<User> user = userRepository.findById(userId);
         Optional.ofNullable(user).map(givenUser -> {
             userRepository.delete(givenUser.get());

@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -19,12 +20,14 @@ public class User {
     @Column(updatable = false, nullable = false, name = "id", length = 36)
     private String id;
 
+    @NotNull
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
 
+    @NotNull
     @Column(name = "email_id")
     private String emailId;
 

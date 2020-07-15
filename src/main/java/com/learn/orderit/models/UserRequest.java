@@ -13,19 +13,19 @@ import java.util.Date;
 public class UserRequest {
 
     @NotNull(message = "First name cannot be null")
-    private String firstName;
+    private String first_name;
 
     @NotNull(message = "Last name cannot be null")
-    private String lastName;
+    private String last_name;
 
     @Email(message = "User email should be valid")
     @NotNull(message = "User email cannot be null")
-    private String emailId;
+    private String email_id;
 
     @NotNull(message = "User phone number cannot be null")
-    private String phoneNumber;
+    private String phone_number;
 
     @Past(message = "User birthDate cannot be in present/future")
     @NotNull(message = "User birthdate cannot be null")
-    private Date birthDate;
+    private Date birth_date;
 }
